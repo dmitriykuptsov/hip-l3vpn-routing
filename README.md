@@ -1,4 +1,4 @@
-# VPLS routing
+# HIP L3 routing
 
 # Deployment
 
