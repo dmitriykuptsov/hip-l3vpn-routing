@@ -85,8 +85,7 @@ class Demultiplexer():
                 if Misc.bytes_to_ipv4_string(destination) != public_ip:
                     continue
 
-                if Misc.bytes_to_ipv4_string(destination) == self.private_ip:
-                    continue
+                
 
                 gre = GRE.GREPacket(outer.get_payload()[:GRE.GRE_HEADER_LENGTH])
                 if gre.get_flags() == 0x1:
