@@ -49,7 +49,7 @@ class Demultiplexer():
         self.own_ip = own_ip
         
         #self.socket_in = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.IPPROTO_IP)
-        self.socket_in = socket.socket(socket.AF_INET, socket.SOCK_RAW, )
+        self.socket_in = socket.socket(socket.AF_INET, socket.SOCK_RAW, GRE.GRE_PROTOCOL_NUMBER)
         self.socket_in.bind(("0.0.0.0", GRE.GRE_PROTOCOL_NUMBER))
         #self.socket_out = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
         #self.socket_out.bind((own_ip, 0))

@@ -47,6 +47,7 @@ class Demultiplexer():
 
         socket_public = socket.socket(socket.AF_INET, socket.SOCK_RAW, GRE.GRE_PROTOCOL_NUMBER)
         socket_public.bind(("0.0.0.0", GRE.GRE_PROTOCOL_NUMBER))
+        socket_public.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1);
 
         socket_private = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.IPPROTO_IP)
         socket_private.bind((private_interface, 0x0800))
