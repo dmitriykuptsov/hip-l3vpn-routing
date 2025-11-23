@@ -45,15 +45,15 @@ class Demultiplexer():
     def __init__(self, public_ip, private_ip, hub_ip, public_interface, private_interface, auth=False):
         self.auth = auth
 
-        socket_public = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.IPPROTO_IP)
-        socket_public.bind((public_interface, 0x0800))
+        socket_public = socket.socket(socket.AF_INET, socket.SOCK_RAW, GRE.GRE_PROTOCOL_NUMBER)
+        socket_public.bind(("0.0.0.0", GRE.GRE_PROTOCOL_NUMBER))
 
         socket_private = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.IPPROTO_IP)
         socket_private.bind((private_interface, 0x0800))
 
-        socket_raw_public = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
-        socket_raw_public.bind((public_ip, 0))
-        socket_raw_public.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1);
+        #socket_raw_public = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
+        #socket_raw_public.bind((public_ip, 0))
+        #socket_raw_public.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1);
 
         socket_raw_private = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
         socket_raw_private.bind((private_ip, 0))
@@ -62,7 +62,7 @@ class Demultiplexer():
         thread = threading.Thread(target=self.read_from_public, args=(socket_public, socket_raw_private, public_ip, ), daemon=True)
         thread.start()
 
-        thread = threading.Thread(target=self.read_from_private, args=(socket_raw_public, socket_private, public_ip, hub_ip), daemon=True)
+        thread = threading.Thread(target=self.read_from_private, args=(socket_public, socket_private, public_ip, hub_ip), daemon=True)
         thread.start()
     
 
@@ -76,7 +76,8 @@ class Demultiplexer():
         while True:
             try:
                 buf = pubfd.recv(mtu)
-                outer = IPv4.IPv4Packet(bytearray(buf[ETHER_HEADER_LENGTH:]))
+                #outer = IPv4.IPv4Packet(bytearray(buf[ETHER_HEADER_LENGTH:]))
+                outer = IPv4.IPv4Packet(bytearray(buf))
                 source = outer.get_source_address()
                 destination = outer.get_destination_address()
                 if Misc.bytes_to_ipv4_string(destination) != public_ip:
