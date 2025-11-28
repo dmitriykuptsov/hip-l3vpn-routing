@@ -125,6 +125,11 @@ class Demultiplexer():
                 outer.set_ttl(128)
                 outer.set_ihl(5)
 
+                destination = Misc.bytes_to_ipv4_string(inner.get_destination_address())
+
+                if destination == self.private_ip:
+                    continue
+
                 gre = GRE.GREPacket()
                 gre.set_protocol(0x0800)
 
